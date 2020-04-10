@@ -1,1 +1,1 @@
-# proxygo
+# GoProxʎ
