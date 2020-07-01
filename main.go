@@ -1,20 +1,27 @@
 package main
 
 import (
-  "net/http"
-  "log"
+	"net/http"
+	"fmt"
 )
 
-func proxyHandler(w http.ResponseWriter, r *http.Request) {
-  // function to match URL's from the DB
-  // Write response to w based on whether URL matches or not
+//func proxyserver(domain string) http.Handler{
+//	cust_handler := func(w http.ResponseWriter, r *http.Request) {
+//		domain_name := r.URL
+//		w.Write([]byte*(domain_name))
+//	}
+//	return http.HandlerFunc(cust_handler)
+//}
+
+func proxyserver(w http.ResponseWriter, r *http.Request) {
+	domain_name := r.Host
+//	w.Write([]byte(domain_name))
+	fmt.Fprintf(w, "%v\n", domain_name)
 }
 
 func main() {
-  mux := http.NewServeMux()
-  ph := http.HandlerFunc(proxyHandler)
-  mux.Handle("/", ph)
-  
-  log.Println("Listening on port 80")
-  http.ListenAndServe(":80", mux)
+	mux := http.NewServeMux()
+	rik := http.HandlerFunc(proxyserver)
+	mux.Handle("/", rik)
+	http.ListenAndServe(":80", mux)
 }
