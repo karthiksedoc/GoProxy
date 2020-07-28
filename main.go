@@ -8,31 +8,35 @@ import (
 
 
 func httpclient(b string) ([]byte, error) {
-	response, err := http.Get(b)	
+	fmt.Println(b)
+	protocol := "http://"
+	response, err := http.Get(protocol+b)
+	fmt.Println(response)
 	if err != nil {
-		//Need to handle error
+
 		var my_response []byte
 		return my_response, err
 	}
 	defer response.Body.Close()
 	my_response, _ := ioutil.ReadAll(response.Body)
+
+	fmt.Printf("httpclient func variable my_response = %T\n", my_response)
 	return my_response, nil
 }
 
 func domainsearch(b string) ([]byte, string) {
 	domains := [4] string{"www.google.com", "google.com", "facebook.com", "yahoo.com"}
-//	fmt.Println(b)
-	var web_response []byte
+	
 	for _, name := range domains  {
-		fmt.Println(name)
+		var web_response []byte
 		if name == b {
-	//	   var web_response []byte
 		   dom_status := "Denied"
 		   return web_response, dom_status
 		} 
 	}
 	webresponse, err := httpclient(b)
 	if err != nil {
+		web_response := []byte(nil)
 		return web_response, "Access Error"
 	}
     return webresponse, ""
@@ -40,7 +44,6 @@ func domainsearch(b string) ([]byte, string) {
 
 func proxyserver(w http.ResponseWriter, r *http.Request) {
 	domain_name := r.Host
-//	w.Write([]byte(domain_name))
 	status, err := domainsearch(domain_name)
 
 	if (err == "Denied") {
@@ -48,7 +51,7 @@ func proxyserver(w http.ResponseWriter, r *http.Request) {
 	   return
 	}
 
-	fmt.Fprintf(w, "%v\n", status)
+	w.Write([]byte(status))
 }
 
 func main() {
