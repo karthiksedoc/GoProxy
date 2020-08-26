@@ -15,7 +15,7 @@ func dom_search(name string) string, error {
 	})
 	dom_stat, err := client.Get(name).Result()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	return dom_stat, nil
 }
